@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firewall Web GUI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #eee;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px;
+        }
+        .button {
+            padding: 8px 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .delete-link {
+            color: red;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Firewall Web GUI</h1>
+
+    <h2>Current Rules</h2>
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Action</th>
+            <th>Direction</th>
+            <th>Protocol</th>
+            <th>Port</th>
+            <th>IP</th>
+            <th>Delete</th>
+        </tr>
+        {% for rule in rules %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ rule.action }}</td>
+            <td>{{ rule.direction }}</td>
+            <td>{{ rule.protocol }}</td>
+            <td>{{ rule.port or '-' }}</td>
+            <td>{{ rule.ip or '-' }}</td>
+            <td><a href="/delete/{{ loop.index0 }}" class="delete-link">X</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Add New Rule</h2>
+    <form method="POST" action="/add">
+        <label>Action:</label>
+        <select name="action">
+            <option value="allow">Allow</option>
+            <option value="block">Block</option>
+        </select>
+
+        <label>Direction:</label>
+        <select name="direction">
+            <option value="input">Input</option>
+            <option value="output">Output</option>
+        </select>
+
+        <label>Protocol:</label>
+        <select name="protocol">
+            <option value="tcp">TCP</option>
+            <option value="udp">UDP</option>
+        </select>
+
+        <label>Port:</label>
+        <input type="number" name="port" placeholder="Optional">
+
+        <label>IP:</label>
+        <input type="text" name="ip" placeholder="Optional">
+
+        <button class="button" type="submit">Add Rule</button>
+    </form>
+
+<form method="post" action="{{ url_for('reset_firewall') }}">
+  <button type="submit" class="btn btn-warning">Reset Firewall</button>
+</form>
+
+    </form>
+</body>
+</html>
